@@ -45,16 +45,19 @@ def safe_unregister_class(cls):
 
 from . import properties, operators, ui, utils
 
+classes = (
+    properties,
+    utils,
+    operators,
+    ui,
+)
+
 def register():
     # 💡 先註冊 properties，確保 Scene Pointer 存在
-    properties.register()
-    utils.register()
-    operators.register()
-    ui.register()
+    for cls in classes:
+        safe_register_class(cls)
 
 def unregister():
     # 💡 逆序解除
-    ui.unregister()
-    operators.unregister()
-    utils.unregister()
-    properties.unregister()
+    for cls in reversed(classes):
+        safe_unregister_class(cls)

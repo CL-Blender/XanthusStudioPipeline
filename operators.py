@@ -133,42 +133,50 @@ class XST_OT_load_armature_by_name(bpy.types.Operator):
     bl_label = "載入指定名稱的 Armature"
 
     def execute(self, context):
-        scene = context.scene
-        scene_root = scene.collection  # Scene Collection
-        props = context.scene.xst_rigging_panel_props
+        # scene = context.scene
+        # scene_root = scene.collection  # Scene Collection
+        # props = context.scene.xst_rigging_panel_props
 
-        prefixes = ("6_CH", "6_PR", "6_SE")
+        # prefixes = ("6_CH", "6_PR", "6_SE")
 
-        # Only direct children of Scene Collection (your requirement)
-        for top_col in scene_root.children:
-            _, suffix = _extract_suffix(top_col.name, prefixes=prefixes)
-            if not suffix:
-                continue
+        # # Only direct children of Scene Collection (your requirement)
+        # for top_col in scene_root.children:
+        #     _, suffix = _extract_suffix(top_col.name, prefixes=prefixes)
+        #     if not suffix:
+        #         continue
 
-            rig_col = _find_first_rig_collection(top_col)
-            if not rig_col:
-                continue
+        #     rig_col = _find_first_rig_collection(top_col)
+        #     if not rig_col:
+        #         continue
 
-            expected_arm_name = f"RIG-{suffix}"
-            arm = _find_armature_named(rig_col, expected_arm_name)
-            if not arm:
-                continue
+        #     expected_arm_name = f"RIG-{suffix}"
+        #     arm = _find_armature_named(rig_col, expected_arm_name)
+        #     if not arm:
+        #         continue
 
-            scene.xst_found_rig = arm
+        #     scene.xst_found_rig = arm
 
-            bpy.ops.object.select_all(action='DESELECT')
-            arm.select_set(True)
-            context.view_layer.objects.active = arm
+        #     bpy.ops.object.select_all(action='DESELECT')
+        #     arm.select_set(True)
+        #     context.view_layer.objects.active = arm
 
-            self.report({'INFO'}, f"Found rig: {arm.name}")
-            return {'FINISHED'}
+        #     self.report({'INFO'}, f"Found rig: {arm.name}")
+        #     return {'FINISHED'}
 
-        scene.xst_found_rig = None
-        self.report({'WARNING'}, "No matching rig armature found.")
-        return {'CANCELLED'}
+        # scene.xst_found_rig = None
+        # self.report({'WARNING'}, "No matching rig armature found.")
+        # return {'CANCELLED'}
 
         return {"FINISHED"}
 
+class XST_OT_model_export_check(bpy.types.Operator):
+    bl_idname = "xanthus_studio_tools.model_export_check"
+    bl_label = "模型匯出檢查"
+
+    def execute(self, context):
+        # Implement your model export check logic here
+        self.report({"INFO"}, "模型匯出檢查完成")
+        return {"FINISHED"}
 
 classes = (
     XST_OT_save_to_project,

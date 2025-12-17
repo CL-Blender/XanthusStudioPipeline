@@ -70,6 +70,11 @@ class XST_PT_assetpanel(bpy.types.Panel):
         layout.label(text="只需選專案路徑即可", icon="INFO")
         layout.operator("xanthus_studio_tools.save_to_project", icon="FILE_FOLDER")
 
+        # Export tool
+        layout.operator("xanthus_studio_tools.model_export_check", icon="MESH_MONKEY")
+
+
+
 class XST_PT_riggingpanel(bpy.types.Panel):
     bl_label = "Rigging 工具"
     bl_idname = "XST_PT_riggingpanel"
