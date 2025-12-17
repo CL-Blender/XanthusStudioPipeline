@@ -111,6 +111,8 @@ class XST_PT_texturepanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        layout.operator("xanthus_studio_tools.load_armature_by_name", icon="OUTLINER_OB_ARMATURE")
+
 
 classes = ( 
     XST_PT_preferences,
