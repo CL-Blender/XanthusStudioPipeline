@@ -46,7 +46,6 @@ class XST_rigging_props(PropertyGroup):
 classes = (
     XST_asset_props,
     XST_rigging_props,
-    XST_LogEntry,
 )
 
 def register():

@@ -2,6 +2,7 @@ import bpy
 import os
 from bpy.types import Operator
 from bpy.props import StringProperty
+from .trobleshooting import XST_Logger
 from .utils import (
     ensure_child_collection,
     parse_name_from_geo,
@@ -183,14 +184,20 @@ class XST_OT_model_export_check(bpy.types.Operator):
         root_layer_collection = context.view_layer.layer_collection
         hide_collection_prefix = ["WGTS", "HLPS", "HIDE"]
         hide_collection_list = []
-        
+        logger = XST_Logger(context)
 
+        logger.clear()
         # 顯示所有模型以便檢查
 
         # 由檔案路徑取得名稱與類型
         filepath = bpy.data.filepath
         if not filepath:
             self.report({"ERROR"}, "請先儲存檔案以進行檢查")
+            logger.log(
+                "請先儲存檔案以進行檢查",
+                details="Found non-manifold edges after boolean.",
+                level="ERROR",
+            )
             return {"CANCELLED"}
         base = os.path.basename(filepath)
         parts = base.split("_")
@@ -273,7 +280,9 @@ class XST_OT_model_export_check(bpy.types.Operator):
 
         self.report({"INFO"}, "模型匯出檢查完成")
         return {"FINISHED"}
-    
+
+
+
 # TODO: 未完成
 class XST_OT_rigging_export_check(bpy.types.Operator):
     bl_idname = "xanthus_studio_tools.rigging_export_check"
