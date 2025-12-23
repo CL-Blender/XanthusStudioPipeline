@@ -2,7 +2,7 @@ import bpy
 from bpy.props import EnumProperty, StringProperty, PointerProperty
 from bpy.types import Operator, Panel, PropertyGroup
 
-class XST_OT_asset_props(PropertyGroup):
+class XST_asset_props(PropertyGroup):
 
     asset_type: EnumProperty(
         name="類型",
@@ -27,7 +27,9 @@ class XST_OT_asset_props(PropertyGroup):
         maxlen=255,
     ) # type: ignore
 
-class XST_PT_rigging_props(PropertyGroup):
+    
+
+class XST_rigging_props(PropertyGroup):
     rig_armature: PointerProperty(
         name="Rig Armature",
         type=bpy.types.Object,
@@ -40,16 +42,18 @@ class XST_PT_rigging_props(PropertyGroup):
         poll=lambda self, obj: obj.type == 'ARMATURE'
     ) # type: ignore
 
+
 classes = (
-    XST_OT_asset_props,
-    XST_PT_rigging_props,
+    XST_asset_props,
+    XST_rigging_props,
+    XST_LogEntry,
 )
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    bpy.types.Scene.xst_asset_panel_props = PointerProperty(type=XST_OT_asset_props)
-    bpy.types.Scene.xst_rigging_panel_props = PointerProperty(type=XST_PT_rigging_props)
+    bpy.types.Scene.xst_asset_panel_props = PointerProperty(type=XST_asset_props)
+    bpy.types.Scene.xst_rigging_panel_props = PointerProperty(type=XST_rigging_props)
 
 def unregister():
     del bpy.types.Scene.xst_asset_panel_props

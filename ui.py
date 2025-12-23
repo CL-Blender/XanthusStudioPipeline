@@ -59,6 +59,8 @@ class XST_PT_assetpanel(bpy.types.Panel):
         layout = self.layout
         props = context.scene.xst_asset_panel_props
 
+        # Asset 架構
+
         layout.prop(props, "asset_type")
         layout.prop(props, "asset_name")
         layout.operator("xanthus_studio_tools.set_name_to_selected", icon="RESTRICT_SELECT_OFF")
@@ -70,8 +72,13 @@ class XST_PT_assetpanel(bpy.types.Panel):
         layout.label(text="只需選專案路徑即可", icon="INFO")
         layout.operator("xanthus_studio_tools.save_to_project", icon="FILE_FOLDER")
 
-        # Export tool
+
+        # 輸出檢查 (TODO: 未完成)
+        layout.separator()
+        layout.label(text="輸出檢查", icon="TOOL_SETTINGS")
         layout.operator("xanthus_studio_tools.model_export_check", icon="MESH_MONKEY")
+        
+        
 
 
 
@@ -99,6 +106,9 @@ class XST_PT_riggingpanel(bpy.types.Panel):
         #load armature button
         layout.operator("xanthus_studio_tools.load_armature_by_name", icon="OUTLINER_OB_ARMATURE")
 
+        # 輸出檢查 (TODO: 未完成)
+        layout.operator("xanthus_studio_tools.rigging_export_check", icon="MESH_MONKEY")
+
 class XST_PT_texturepanel(bpy.types.Panel):
     bl_label = "Texture 工具"
     bl_idname = "XST_PT_texturepanel"
@@ -117,7 +127,7 @@ class XST_PT_texturepanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         layout.operator("xanthus_studio_tools.load_armature_by_name", icon="OUTLINER_OB_ARMATURE")
-
+        
 
 classes = ( 
     XST_PT_preferences,
