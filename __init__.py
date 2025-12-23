@@ -46,8 +46,8 @@ def safe_unregister_class(cls):
 from . import properties, utils, operators, ui, trobleshooting
 
 modules = (
-    trobleshooting,
     properties,
+    trobleshooting,
     utils,
     operators,
     ui,

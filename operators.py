@@ -187,7 +187,7 @@ class XST_OT_model_export_check(bpy.types.Operator):
 
         # 顯示所有模型以便檢查
 
-        #由檔案路徑取得名稱與類型
+        # 由檔案路徑取得名稱與類型
         filepath = bpy.data.filepath
         if not filepath:
             self.report({"ERROR"}, "請先儲存檔案以進行檢查")
