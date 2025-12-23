@@ -59,6 +59,24 @@ def write_work_version_log(file_path, asset_type, asset_name):
         f.write(f"Path    : {file_path}\n")
         f.write("-" * 60 + "\n\n")
 
+def find_layer_collection(layer_collection, target_collection):
+    """ Recursively search for the layer_collection that corresponds to a given collection. """
+    if layer_collection.collection == target_collection:
+        return layer_collection
+    for child in layer_collection.children:
+        found = find_layer_collection(child, target_collection)
+        if found:
+            return found
+    return None
+
+def get_prefix(name):
+    # get the prefix before the first underscore
+    if "_" in name:
+        return name.split("_")[0]
+    elif "-" in name:
+        return name.split("-")[0]
+    return None
+
 def register():
     pass
 

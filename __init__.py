@@ -43,9 +43,10 @@ def safe_unregister_class(cls):
         pass
 
 
-from . import properties, operators, ui, utils
+from . import properties, utils, operators, ui, trobleshooting
 
-classes = (
+modules = (
+    trobleshooting,
     properties,
     utils,
     operators,
@@ -53,11 +54,11 @@ classes = (
 )
 
 def register():
-    # 💡 先註冊 properties，確保 Scene Pointer 存在
-    for cls in classes:
-        safe_register_class(cls)
+    for mod in modules:
+        if hasattr(mod, "register"):
+            mod.register()
 
 def unregister():
-    # 💡 逆序解除
-    for cls in reversed(classes):
-        safe_unregister_class(cls)
+    for mod in reversed(modules):
+        if hasattr(mod, "unregister"):
+            mod.unregister()

@@ -7,6 +7,8 @@ from .utils import (
     parse_name_from_geo,
     build_default_blend_name,
     write_work_version_log,
+    get_prefix,
+    find_layer_collection,
 )
 
 class XST_OT_save_to_project(Operator):
@@ -169,20 +171,135 @@ class XST_OT_load_armature_by_name(bpy.types.Operator):
 
         return {"FINISHED"}
 
+# TODO: 未完成
 class XST_OT_model_export_check(bpy.types.Operator):
     bl_idname = "xanthus_studio_tools.model_export_check"
     bl_label = "模型匯出檢查"
 
     def execute(self, context):
         # Implement your model export check logic here
+        scene = context.scene
+        scene_root = scene.collection  # Scene Collection
+        root_layer_collection = context.view_layer.layer_collection
+        hide_collection_prefix = ["WGTS", "HLPS", "HIDE"]
+        hide_collection_list = []
+        
+
+        # 顯示所有模型以便檢查
+
+        #由檔案路徑取得名稱與類型
+        filepath = bpy.data.filepath
+        if not filepath:
+            self.report({"ERROR"}, "請先儲存檔案以進行檢查")
+            return {"CANCELLED"}
+        base = os.path.basename(filepath)
+        parts = base.split("_")
+        if len(parts) < 2:
+            self.report({"ERROR"}, "檔名格式錯誤，無法解析名稱與類型")
+            return {"CANCELLED"}
+        asset_type = parts[0]
+        asset_name = parts[1]
+        
+        model_col_name = f"6_{asset_type}_{asset_name}"
+        model_col = scene_root.children.get(model_col_name)
+        if not model_col:
+            self.report({"ERROR"}, f"找不到 Collection: {model_col_name}")
+            return {"CANCELLED"}
+
+
+        # Iterate through all child collections recursively and hide/unhide based on rules
+        for col in model_col.children_recursive:
+            # Recursively find the correct LayerCollection
+            layer_collection = find_layer_collection(root_layer_collection, col)
+
+            if not layer_collection:
+                self.report({"WARNING"}, f"找不到 {col.name} 的 LayerCollection")
+                continue
+
+            # 隱藏 collections based on prefix
+            if get_prefix(col.name) in hide_collection_prefix:
+                layer_collection.exclude = True
+                layer_collection.hide_viewport = True
+
+                col.hide_viewport = True
+                col.hide_render = True
+                col.hide_select = True
+
+                hide_collection_list.append(col.name)
+
+                continue
+            
+            # 隱藏 Geo-Scatter collections
+            elif col.name.startswith("Geo-Scatter"):
+                if col.name == "Geo-Scatter" or col.name == "Geo-Scatter Geonode":
+                    continue
+
+                layer_collection.exclude = True
+                layer_collection.hide_viewport = True
+
+                col.hide_viewport = True
+                col.hide_render = True
+                col.hide_select = True
+
+                hide_collection_list.append(col.name)
+
+                continue
+
+            # 顯示 collections 和 objects
+            layer_collection.exclude = False
+            layer_collection.hide_viewport = False
+
+            col.hide_viewport = False
+            col.hide_render = False
+            col.hide_select = False
+
+            for obj in col.objects:
+                obj.hide_viewport = False
+                obj.hide_render = False
+                col.hide_select = False
+
+        self.report({"INFO"}, f"隱藏的 Collection: {', '.join(hide_collection_list)}")
+
+        # Hide objects outside of collection
+        for scene_root_obj in scene_root.objects:
+            scene_root_obj.hide_viewport = True
+            scene_root_obj.hide_render = True
+
+        self.report({"INFO"}, "模型匯出顯示完成")
+
+        
+
+
+
         self.report({"INFO"}, "模型匯出檢查完成")
+        return {"FINISHED"}
+    
+# TODO: 未完成
+class XST_OT_rigging_export_check(bpy.types.Operator):
+    bl_idname = "xanthus_studio_tools.rigging_export_check"
+    bl_label = "Rigging 匯出檢查"
+
+    def execute(self, context):
+        # Implement your rigging export check logic here
+        self.report({"INFO"}, "Rigging 匯出檢查完成")
+        return {"FINISHED"}
+    
+# TODO: 未完成
+class XST_OT_texture_export_check(bpy.types.Operator):
+    bl_idname = "xanthus_studio_tools.texture_export_check"
+    bl_label = "Texture 匯出檢查"
+
+    def execute(self, context):
+        # Implement your texture export check logic here
+        self.report({"INFO"}, "Texture 匯出檢查完成")
         return {"FINISHED"}
 
 classes = (
     XST_OT_save_to_project,
     XST_OT_create_structure,
     XST_OT_set_name_to_selected,
-    XST_OT_load_armature_by_name
+    XST_OT_load_armature_by_name,
+    XST_OT_model_export_check,
 )
 
 def register():
